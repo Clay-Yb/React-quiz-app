@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import Quiz from './components/Quiz';
+import SetupForm from './components/SetupForm';
+import { useGlobalContext } from './ContextProvider';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const { isWaiting, loading, quiz, page, setPage, correctAns } = useGlobalContext();
+
+	if (isWaiting) {
+		return <SetupForm />;
+	}
+
+	if (loading) {
+		return (
+			<div className="App">
+				<div className="quiz_container">
+					<h3 className="loading">Loading...</h3>
+				</div>
+			</div>
+		);
+	}
+
+	const handleClick = () => {
+		setPage((prev) => prev + 1);
+	};
+
+	return (
+		<div className="App">
+			<div className="quiz_container">
+				<Quiz data={quiz[page]} />
+				<div className="btn">
+					<span>Correct Answer: {correctAns}</span>
+					<button className="next" onClick={handleClick}>
+						Next Question
+					</button>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default App;
